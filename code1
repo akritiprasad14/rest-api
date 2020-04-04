@@ -1,0 +1,101 @@
+db.createCollection(“bosses”);
+ 
+db.bosses.insertMany([{“
+  name”: “Man”,
+  “weapon”: “Rolling Cutter”,
+  “weakness”: “Super Arm”
+ },
+ {“
+  name”: “Guts Man”,
+  “weapon”: “Super Arm”,
+  “weakness”: “Hyper Bomb”
+ },
+ {“
+  name”: “Fire Man”,
+  “weapon”: “Fire Wave”,
+  “weakness”: “Ice Slasher”
+ }
+]);
+package com.example.rrice.megaman.models;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import com.example.rrice.megaman.BossesController.java
+package com.example.rrice.megaman;
+import com.example.rrice.megaman.models.Bosses;
+import com.example.rrice.megaman.repositories.BossesRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import javax.validation.Valid;
+import java.util.List;
+@RestController
+@RequestMapping(“/bosses”)
+  public class BossesController {
+   @Autowired
+   private BossesRepository repository;
+  }
+public class Bosses {
+ @Id
+ public ObjectId _id;
+ public String name;
+ public String weapon;
+ public String weakness;
+ 
+ // Constructors
+ public Bosses() {}
+ public Bosses(ObjectId _id, String name, String weapon, String weakness) {
+  this._id = _id;
+  this.name = name;
+  this.weapon = weapon;
+  this.weakness = weakness;
+ }
+ 
+ // ObjectId needs to be converted to string
+ public String get_id() {
+  return _id.toHexString();
+ }
+ public void set_id(ObjectId _id) {
+  this._id = _id;
+ }
+ 
+ public String getName() {
+  return name;
+ }
+ public void setName(String name) {
+  this.name = name;
+ }
+ 
+ public String getWeapon() {
+  return weapon;
+ }
+ public void setWeapon(String weapon) {
+  this.weapon = weapon;
+ }
+ 
+ public String getWeakness() {
+  return weakness;
+ }
+ public void setWeakness(String weakness) {
+  this.weakness = weakness;
+ }
+@RequestMapping(value = “/”, method = RequestMethod.GET)
+  public List getAllBosses() {
+   return repository.findAll();
+  }
+  @RequestMapping(value = “/{id}”, method = RequestMethod.GET)
+   public Bosses getBossById(@PathVariable(“id”) ObjectId id) {
+    return repository.findBy_id(id);
+   }
+@RequestMapping(value = “/{id}”, method = RequestMethod.PUT)
+  public void modifyBossById(@PathVariable(“id”) ObjectId id, @Valid @RequestBody Bosses bosses) {
+   bosses.set_id(id);
+   repository.save(bosses);
+  }
+@RequestMapping(value = “/{id}”, method = RequestMethod.DELETE)
+  public void deleteBoss(@PathVariable ObjectId id) {
+   repository.delete(repository.findBy_id(id));
+  }
+}
